@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        
+        body {
+            background-color: #f9f9f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background-color: #fff;
+            border: 20px solid #ff6b6b;
+            border-radius: 15px;
+            padding: 20px;
+            width: 300px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+        .game {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .input-display {
+            margin-bottom: 15px;
+        }
+        .input-display input {
+            font-size: 18px;
+            text-align: center;
+        }
+        .btn-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .btn {
+            font-size: 18px;
+            height: 50px;
+            line-height: 1;
+        }
+        .btn-clear {
+            background-color: #ff4343;
+            color: #fff;
+        }
+        .btn-guess {
+            background-color: #3fd5ff;
+            color: #fff;
+        }
+        .btn-start {
+            background-color: #29f925;
+            color: #fff;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="game">1 ~ 100</div>
+        <div class="input-display">
+            <input id="range-display" type="text" class="form-control mb-2" value="猜的範圍" readonly>
+            <input id="guess-display" type="text" class="form-control" placeholder="" readonly>
+        </div>
+        <div class="btn-grid">
+            <button class="btn btn-outline-primary" onclick="appendN(7)">7</button>
+            <button class="btn btn-outline-primary" onclick="appendN(8)">8</button>
+            <button class="btn btn-outline-primary" onclick="appendN(9)">9</button>
+            <button class="btn btn-outline-primary" onclick="appendN(4)">4</button>
+            <button class="btn btn-outline-primary" onclick="appendN(5)">5</button>
+            <button class="btn btn-outline-primary" onclick="appendN(6)">6</button>
+            <button class="btn btn-outline-primary" onclick="appendN(1)">1</button>
+            <button class="btn btn-outline-primary" onclick="appendN(2)">2</button>
+            <button class="btn btn-outline-primary" onclick="appendN(3)">3</button>
+            <button class="btn btn-clear" onclick="clearGuess()">X</button>  
+            <button class="btn btn-outline-primary" onclick="appendN(0)">0</button>
+            <button class="btn btn-guess" onclick="submit()">✔</button> 
+        </div>
+        <button class="btn btn-start" onclick="startGame()">Game Start</button>
+    </div>
+
+    <script>
+        let secretN = null;
+        let min = 1;
+        let Min = 100;
+        let gameStarted = false;
+
+        function startGame() {
+            secretN = Math.floor(Math.random() * 100) + 1;
+            min = 1;
+            Min = 100;
+            gameStarted = true;
+            document.getElementById('range-display').value = `${min} ~ ${Min}`;
+            document.getElementById('guess-display').value = '';
+        }
+
+        function appendN(num) {
+            if (!gameStarted) {
+                // 要按 Game Start開始遊戲
+                return;
+            }
+            const display = document.getElementById('guess-display');
+            display.value += num;
+        }
+
+        function clearGuess() {
+            document.getElementById('guess-display').value = '';
+        }
+
+        function submit() {
+            if (!gameStarted) {
+                return;
+            }
+
+            const guess = parseInt(document.getElementById('guess-display').value);
+
+            if (isNaN(guess) || guess < min || guess > Min) {
+                return;
+            }
+
+            if (guess === secretN) {
+                alert('恭喜你，猜對了 !');
+                startGame();
+            } else if (guess < secretN) {
+                min = Math.max(min, guess + 1);
+            } else {
+                Min = Math.min(Min, guess - 1);
+            }
+
+            document.getElementById('range-display').value = `${min} ~ ${Min}`;
+            document.getElementById('guess-display').value = '';
+        }
+    </script>
+</body>
+</html>
